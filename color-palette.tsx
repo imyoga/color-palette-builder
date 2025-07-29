@@ -64,6 +64,37 @@ export default function ColorPalette() {
     }
   }
 
+  const addAllExtractedColors = () => {
+    const newColors = [...colors]
+    let addedCount = 0
+    
+    for (let i = 0; i < extractedColors.length && addedCount < colors.length; i++) {
+      const color = extractedColors[i]
+      const targetIndex = newColors.findIndex((c) => !c)
+      
+      if (targetIndex !== -1) {
+        newColors[targetIndex] = color
+        addedCount++
+      } else {
+        break // No more empty slots
+      }
+    }
+    
+    if (addedCount > 0) {
+      setColors(newColors)
+      toast({
+        title: "Colors added",
+        description: `Added ${addedCount} color${addedCount > 1 ? 's' : ''} to the palette`,
+      })
+    } else {
+      toast({
+        title: "Palette full",
+        description: "All color slots are filled",
+        variant: "destructive"
+      })
+    }
+  }
+
   const copyColor = (color: string) => {
     const normalizedColor = normalizeHex(color)
     if (normalizedColor) {
@@ -437,9 +468,7 @@ export default function ColorPalette() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => {
-                        extractedColors.forEach((color) => addExtractedColor(color))
-                      }}
+                      onClick={addAllExtractedColors}
                       className="w-full"
                     >
                       Add All Colors
